@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Calculate your Australian university WAM and the remaining average needed to reach PASS, CREDIT, DISTINCTION, or HIGH DISTINCTION."
+    />
+    <title>WAM Pathway</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="brand">
+        <svg viewBox="0 0 48 48" aria-hidden="true">
+          <path d="M4 17.5 24 8l20 9.5L24 27 4 17.5Z"></path>
+          <path d="M12 22.5v9c5.8 4.2 18.2 4.2 24 0v-9"></path>
+          <path d="M42 19.5v12"></path>
+        </svg>
+        <div>
+          <h1>WAM Pathway</h1>
+          <span>Australian University WAM Calculator</span>
+        </div>
+      </div>
+      <div class="topbar-actions">
+        <span>GitHub Pages</span>
+        <span class="static-pill">Static Branch Deploy</span>
+      </div>
+    </header>
+
+    <main class="page">
+      <section class="notice">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <circle cx="12" cy="12" r="9"></circle>
+          <path d="M12 10.5v5"></path>
+          <path d="M12 7.5h.01"></path>
+        </svg>
+        <p>
+          WAM Pathway calculates your current Weighted Average Mark (WAM) and the average needed in
+          remaining credit points to reach each target.
+        </p>
+      </section>
+
+      <div class="workspace">
+        <section class="panel input-panel" aria-labelledby="degree-title">
+          <div class="section-heading">
+            <div>
+              <h2 id="degree-title">Your degree overview</h2>
+              <p>Enter your degree size, progress, and marks.</p>
+            </div>
+          </div>
+
+          <div class="overview-grid">
+            <label class="field">
+              <span>Total degree credit points</span>
+              <input id="totalCredits" type="number" min="1" value="144" />
+              <small>e.g. 144 for a 3-year degree</small>
+            </label>
+            <label class="field">
+              <span>Completed credit points</span>
+              <input id="completedCredits" type="number" min="0" value="72" />
+              <small>Must be less than total</small>
+            </label>
+            <label class="field">
+              <span>Current WAM</span>
+              <input id="currentWam" type="number" min="0" max="100" value="68.25" />
+              <small id="wamHint">0 to 100</small>
+            </label>
+            <label class="field">
+              <span>Remaining credit points</span>
+              <input id="remainingCredits" type="number" disabled />
+              <small>Calculated</small>
+            </label>
+          </div>
+
+          <div class="divider"></div>
+
+          <div class="subjects-heading">
+            <div>
+              <h3>Subjects completed <span>(optional but recommended)</span></h3>
+              <p>Add units you have completed. Included units are used to calculate your WAM.</p>
+            </div>
+            <button id="addSubject" class="button button-outline" type="button">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M12 5v14"></path>
+                <path d="M5 12h14"></path>
+              </svg>
+              Add subject
+            </button>
+          </div>
+
+          <div class="subject-table" role="table" aria-label="Completed subjects">
+            <div class="subject-row subject-row-head" role="row">
+              <span>#</span>
+              <span>Subject name / code</span>
+              <span>Credit points</span>
+              <span>Mark (%)</span>
+              <span>Include</span>
+              <span>Actions</span>
+            </div>
+            <div id="subjectRows"></div>
+          </div>
+
+          <div class="subject-summary">
+            <span>Included: <strong id="includedCount">0</strong> subjects</span>
+            <span>Included credit points: <strong id="includedCredits">0</strong></span>
+            <span>Calculated WAM: <strong id="calculatedWam">N/A</strong></span>
+          </div>
+
+          <div class="panel-actions">
+            <div class="button-group">
+              <button id="resetAll" class="button button-primary" type="button">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M4 12a8 8 0 1 0 2.3-5.7"></path>
+                  <path d="M4 4v6h6"></path>
+                </svg>
+                Reset all
+              </button>
+              <button id="loadExample" class="button button-outline" type="button">Load example</button>
+            </div>
+            <p id="validation" class="validation validation-good"></p>
+          </div>
+        </section>
+
+        <aside class="panel results-panel" aria-labelledby="results-title">
+          <div class="section-heading">
+            <div>
+              <h2 id="results-title">Your WAM pathway</h2>
+              <p>Based on <strong id="remainingLabel">72</strong> credit points remaining</p>
+            </div>
+          </div>
+
+          <div id="targetList" class="target-list"></div>
+
+          <section class="formula-panel" aria-labelledby="formula-title">
+            <button id="formulaToggle" class="formula-toggle" type="button" aria-expanded="true">
+              <span id="formula-title">How WAM is calculated</span>
+              <span id="formulaToggleText">Hide</span>
+            </button>
+            <div id="formulaContent" class="formula-content">
+              <p>
+                WAM is a weighted average of your marks, where each unit's mark is weighted by its
+                credit points.
+              </p>
+              <div class="formula">WAM = Σ(Mark × Credit Points) / Σ(Credit Points)</div>
+              <p>
+                Required remaining WAM = (Target × Total CP - Current WAM × Completed CP) /
+                Remaining CP.
+              </p>
+              <p class="policy-note">
+                WAM policies vary between universities. Always check your university handbook for official
+                information.
+              </p>
+            </div>
+          </section>
+        </aside>
+      </div>
+
+      <footer class="footer-note">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <circle cx="12" cy="12" r="9"></circle>
+          <path d="M12 10.5v5"></path>
+          <path d="M12 7.5h.01"></path>
+        </svg>
+        <span>
+          Note: PASS, CREDIT, DISTINCTION, and HIGH DISTINCTION thresholds are common defaults, not
+          official rules for every university.
+        </span>
+      </footer>
+    </main>
+
+    <script src="./app.js"></script>
+  </body>
+</html>
